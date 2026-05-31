@@ -1,4 +1,5 @@
 export interface CalEvent {
+  id?: string;
   name: string;
   cat: number;
 }
