@@ -16,7 +16,6 @@ export function useCalendar() {
   const [activeTheme, setActiveTheme] = useState<Theme>(THEMES[0]);
   const [loading,     setLoading]    = useState(false);
 
-  // ── THEME (localStorage เหมือนเดิม) ──
   const loadThemePref = useCallback((): ThemePref | null => {
     try { return JSON.parse(localStorage.getItem(TH_KEY) || 'null'); }
     catch { return null; }
@@ -31,7 +30,6 @@ export function useCalendar() {
     persistTheme(pref);
   }, [persistTheme]);
 
-  // ── LOAD EVENTS จาก Supabase ──
   const loadEvents = useCallback(async (y: number, m: number) => {
     setLoading(true);
     const { data, error } = await supabase
@@ -56,7 +54,6 @@ export function useCalendar() {
     setLoading(false);
   }, []);
 
-  // ── CHANGE MONTH ──
   const changeMonth = useCallback((dir: number) => {
     let nm = curMonth + dir;
     let ny = curYear;
@@ -67,7 +64,6 @@ export function useCalendar() {
     loadEvents(ny, nm);
   }, [curMonth, curYear, loadEvents]);
 
-  // ── ADD EVENT ──
   const addEvent = useCallback(async (day: number, event: CalEvent) => {
     const { data, error } = await supabase
       .from('events')
@@ -89,7 +85,6 @@ export function useCalendar() {
     }));
   }, [curYear, curMonth]);
 
-  // ── DELETE EVENT ──
   const deleteEvent = useCallback(async (day: number, idx: number) => {
     const event = monthData[day]?.[idx];
     if (!event?.id) return;
@@ -108,7 +103,6 @@ export function useCalendar() {
     });
   }, [monthData]);
 
-  // ── INIT ──
   useEffect(() => {
     const saved = loadThemePref();
     if (saved?.type === 'preset' && saved.id) {
